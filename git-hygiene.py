@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 from datetime import datetime, timezone
 
-USER_HOME = Path(os.environ.get("USERPROFILE", r"C:\Users\joelg"))
+USER_HOME = Path(os.environ.get("USERPROFILE") or os.path.expanduser("~"))
 
 # Directories to skip during .git search (performance)
 SKIP_DIRS = {

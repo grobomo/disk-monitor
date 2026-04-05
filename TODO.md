@@ -34,11 +34,10 @@ Never deletes without explicit approval. Advisory by default.
   - Updated both hooks to reference disk-monitor scan.py
   - Alert messages now guide Claude to run the scan before suggesting deletions
 
-- [ ] T007: Pilot — extract disk-cleanup from claude-config monorepo
-  - Create grobomo/disk-monitor repo
-  - Convert skills/disk-monitor to git submodule in claude-config
-  - Document the pattern for migrating other skills
-  - This proves the submodule approach before batch migration
+- [x] T007: Pilot — extract disk-monitor to standalone repo
+  - Created grobomo/disk-monitor (public)
+  - Git init + push from ~/.claude/skills/disk-monitor/
+  - Submodule conversion deferred to T008 (needs claude-config monorepo changes)
 
 ### Phase 4: Monorepo cleanup
 - [ ] T008: Batch-migrate remaining skills to individual repos

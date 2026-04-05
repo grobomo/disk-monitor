@@ -1,6 +1,6 @@
 """
 Disk scanner for disk-monitor skill.
-Uses PowerShell to enumerate directory sizes under C:\\Users\\joelg.
+Uses PowerShell to enumerate directory sizes under the user profile.
 Categorizes each directory using patterns.json.
 Output: JSON to stdout.
 """
@@ -16,7 +16,7 @@ from pathlib import Path
 
 SKILL_DIR = Path(__file__).parent
 PATTERNS_FILE = SKILL_DIR / "patterns.json"
-USER_HOME = Path(os.environ.get("USERPROFILE", r"C:\Users\joelg"))
+USER_HOME = Path(os.environ.get("USERPROFILE") or os.path.expanduser("~"))
 
 # PowerShell script to enumerate top-level directory sizes
 PS_SCRIPT = r"""

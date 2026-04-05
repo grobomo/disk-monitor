@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).parent
-EMAIL_MANAGER = Path(os.environ.get("USERPROFILE", r"C:\Users\joelg")) / "Documents" / "ProjectsCL1" / "email-manager"
+EMAIL_MANAGER = Path(os.environ.get("USERPROFILE") or os.path.expanduser("~")) / "Documents" / "ProjectsCL1" / "email-manager"
 
 
 def generate_report(scan_file=None, git_file=None):
