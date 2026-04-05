@@ -256,6 +256,78 @@
       "description": "Active project repositories"
     },
     {
+      "id": "user-downloads",
+      "glob": "**/Downloads",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Downloads folder -- review for old installers and large files"
+    },
+    {
+      "id": "user-videos",
+      "glob": "**/Videos",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "User videos -- personal media"
+    },
+    {
+      "id": "user-onedrive",
+      "glob": "**/OneDrive*",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "OneDrive synced folder -- cloud-backed, never delete locally"
+    },
+    {
+      "id": "user-archive",
+      "glob": "**/archive",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "User archive folder -- old files moved here for review"
+    },
+    {
+      "id": "virtualbox-vms",
+      "glob": "**/VirtualBox VMs",
+      "category": "REVIEW",
+      "min_age_days": 30,
+      "regeneration_command": null,
+      "description": "VirtualBox virtual machines -- large, check if still needed"
+    },
+    {
+      "id": "user-appdata",
+      "glob": "**/AppData",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "AppData root -- scan deeper for specific cleanup targets"
+    },
+    {
+      "id": "claude-config",
+      "glob": "**/.claude",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Claude Code config, hooks, and skills"
+    },
+    {
+      "id": "user-local",
+      "glob": "**/.local",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Local data directory -- pip installs, share data"
+    },
+    {
+      "id": "docker-data",
+      "glob": "**/.docker",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Docker config and images -- review if Docker Desktop removed"
+    },
+    {
       "id": "windows-old",
       "glob": "**/Windows.old/**",
       "category": "REVIEW",

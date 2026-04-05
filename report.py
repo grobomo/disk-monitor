@@ -12,7 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).parent
-EMAIL_MANAGER = Path(os.environ.get("USERPROFILE") or os.path.expanduser("~")) / "Documents" / "ProjectsCL1" / "email-manager"
+USER_HOME = Path(os.environ.get("USERPROFILE") or os.path.expanduser("~"))
+MSGRAPH_LIB = USER_HOME / "Documents" / "ProjectsCL1" / "msgraph-lib"
 
 
 def generate_report(scan_file=None, git_file=None):
@@ -56,7 +57,7 @@ def generate_report(scan_file=None, git_file=None):
                 size = f"{e.get('size_gb', 0):.1f} GB" if e.get("size_gb", 0) >= 1 else f"{e.get('size_mb', 0):.0f} MB"
                 desc = e.get("pattern_description", "")
                 lines.append(f"  {size:>8}  {path}")
-                if desc and desc != "No matching pattern — defaults to REVIEW":
+                if desc and desc != "No matching pattern -- defaults to REVIEW":
                     lines.append(f"           {desc}")
             if len(items) > 15:
                 lines.append(f"  ... and {len(items) - 15} more")
@@ -111,26 +112,30 @@ def generate_report(scan_file=None, git_file=None):
 
 
 def send_email(subject, body):
-    """Send report via email-manager."""
-    send_script = EMAIL_MANAGER / "send.py"
-    if not send_script.exists():
-        print(f"email-manager not found at {send_script}", file=sys.stderr)
-        print("Report printed to stdout instead.\n")
-        print(body)
-        return False
-
-    cmd = [
-        sys.executable, str(send_script),
-        "--to", "me",
-        "--subject", subject,
-        "--body", body
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-    if result.returncode == 0:
-        print(f"Report emailed successfully.")
+    """Send report to self via MS Graph API."""
+    try:
+        sys.path.insert(0, str(MSGRAPH_LIB))
+        from token_manager import graph_post, graph_get
+        me = graph_get("/me")
+        if not me or "mail" not in me:
+            print("Could not get user email from Graph API.", file=sys.stderr)
+            print("Report printed to stdout instead.\n")
+            print(body)
+            return False
+        my_email = me["mail"]
+        message = {
+            "message": {
+                "subject": subject,
+                "body": {"contentType": "Text", "content": body},
+                "toRecipients": [{"emailAddress": {"address": my_email}}]
+            },
+            "saveToSentItems": "true"
+        }
+        graph_post("/me/sendMail", message)
+        print(f"Report emailed to {my_email}.")
         return True
-    else:
-        print(f"Email failed: {result.stderr}", file=sys.stderr)
+    except Exception as e:
+        print(f"Email failed: {e}", file=sys.stderr)
         print("Report printed to stdout instead.\n")
         print(body)
         return False
@@ -153,7 +158,7 @@ def main():
         print(f"Report written to {args.output}")
 
     if args.email:
-        subject = f"Disk Monitor Report — {datetime.now().strftime('%Y-%m-%d')}"
+        subject = f"Disk Monitor Report -- {datetime.now().strftime('%Y-%m-%d')}"
         send_email(subject, report)
     else:
         print(report)

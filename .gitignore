@@ -1,4 +1,7 @@
 cleanup-log.json
+last-scan.json
+last-git-hygiene.json
 __pycache__/
 *.pyc
 archive/
+SESSION_STATE.md

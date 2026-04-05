@@ -19,6 +19,7 @@ PATTERNS_FILE = SKILL_DIR / "patterns.json"
 USER_HOME = Path(os.environ.get("USERPROFILE") or os.path.expanduser("~"))
 
 # PowerShell script to enumerate top-level directory sizes
+# Uses Get-ChildItem with streaming ForEach-Object — no Sort, single pass for max date
 PS_SCRIPT = r"""
 $ErrorActionPreference = 'SilentlyContinue'
 $root = $args[0]
@@ -26,27 +27,22 @@ $depth = [int]$args[1]
 
 function Get-DirInfo {
     param([string]$Path)
-    $info = @{
-        path = $Path
-        size_bytes = 0
-        file_count = 0
-        last_modified = $null
-    }
-    try {
-        $items = Get-ChildItem -Path $Path -Recurse -File -Force -ErrorAction SilentlyContinue
-        if ($items) {
-            $info.size_bytes = ($items | Measure-Object -Property Length -Sum).Sum
-            $info.file_count = $items.Count
-            $newest = ($items | Sort-Object LastWriteTime -Descending | Select-Object -First 1)
-            if ($newest) {
-                $info.last_modified = $newest.LastWriteTime.ToUniversalTime().ToString("o")
-            }
+    $totalSize = [long]0
+    $fileCount = 0
+    $newestTime = [datetime]::MinValue
+    Get-ChildItem -Path $Path -Recurse -File -Force -ErrorAction SilentlyContinue |
+        ForEach-Object {
+            $totalSize += $_.Length
+            $fileCount++
+            if ($_.LastWriteTimeUtc -gt $newestTime) { $newestTime = $_.LastWriteTimeUtc }
         }
-    } catch {}
-    $info | ConvertTo-Json -Compress
+    $lastMod = $null
+    if ($fileCount -gt 0) {
+        $lastMod = $newestTime.ToString("o")
+    }
+    @{ path=$Path; size_bytes=$totalSize; file_count=$fileCount; last_modified=$lastMod } | ConvertTo-Json -Compress
 }
 
-# Enumerate directories at the requested depth
 $dirs = Get-ChildItem -Path $root -Directory -Force -ErrorAction SilentlyContinue
 foreach ($dir in $dirs) {
     if ($depth -le 1) {
@@ -149,7 +145,7 @@ def run_scan(scan_root=None, depth=1, min_size_mb=0):
             "-ExecutionPolicy", "Bypass",
             "-File", ps_file.name, root, str(depth)
         ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     finally:
         os.unlink(ps_file.name)
 

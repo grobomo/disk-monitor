@@ -49,8 +49,16 @@ Never deletes without explicit approval. Advisory by default.
 
 ### Phase 5: Polish and real-world use
 - [x] T009: Add --top N flag to scan.py for quick "what's eating my disk" answers
-- [ ] T010: Run full home scan, save to last-scan.json, generate first real email report
-- [ ] T011: Schedule periodic scan via claude-scheduler (weekly)
+- [x] T010: Run full home scan, save to last-scan.json, generate first real email report
+  - Fixed PS script perf: streaming ForEach-Object instead of Sort-Object (was timing out)
+  - Fixed .NET EnumerateFiles approach (swallowed all errors, reported 0 bytes)
+  - 10 entries, 902 GB total across user home
+  - Added 9 new patterns for top-level dirs (Downloads, OneDrive, VirtualBox, etc.)
+  - Fixed report.py to use msgraph-lib/Graph API for email instead of nonexistent send.py
+  - First real report emailed successfully
+- [x] T011: Schedule periodic scan via claude-scheduler (weekly)
+  - Created run-weekly.py orchestrator (scan + git-hygiene + report + email)
+  - Registered as "disk-monitor" task (weekly interval)
 - [x] T012: Add patterns for common Windows bloat (Windows.old, WinSxS backup, Installer cache)
   - Added 9 new patterns: Windows.old, WinSxS, Installer, Update cache, crash dumps, NuGet, Chrome/Edge cache, thumbnails
 
