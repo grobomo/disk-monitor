@@ -189,7 +189,7 @@ def run_scan(scan_root=None, depth=1, min_size_mb=0):
     return entries
 
 
-def print_summary(entries):
+def print_summary(entries, top_n=30):
     """Print human-readable summary."""
     total_gb = sum(e.get("size_gb", 0) for e in entries)
     by_category = {}
@@ -211,7 +211,7 @@ def print_summary(entries):
     print(f"\n{'-'*70}")
     print(f"{'Path':<50} {'Size':>8} {'Category':<12}")
     print(f"{'-'*70}")
-    for e in entries[:30]:  # Top 30 by size
+    for e in entries[:top_n]:
         path = e["path"].replace(str(USER_HOME), "~")
         if len(path) > 48:
             path = "..." + path[-45:]
@@ -227,6 +227,7 @@ def main():
     parser.add_argument("--root", default=None, help="Root directory to scan (default: user home)")
     parser.add_argument("--depth", type=int, default=1, help="Scan depth (1=top-level, 2=one deeper)")
     parser.add_argument("--min-size-mb", type=float, default=10, help="Minimum size in MB to report (default: 10)")
+    parser.add_argument("--top", type=int, default=30, help="Show top N directories by size (default: 30)")
     parser.add_argument("--json", action="store_true", help="Output raw JSON instead of summary")
     parser.add_argument("--output", help="Write JSON to file")
     args = parser.parse_args()
@@ -242,7 +243,7 @@ def main():
         else:
             print(output)
     else:
-        print_summary(entries)
+        print_summary(entries, top_n=args.top)
         if args.output:
             with open(args.output, "w") as f:
                 json.dump(entries, f, indent=2)

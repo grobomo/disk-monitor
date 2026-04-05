@@ -40,11 +40,27 @@ Never deletes without explicit approval. Advisory by default.
   - Submodule conversion deferred to T008 (needs claude-config monorepo changes)
 
 ### Phase 4: Monorepo cleanup
-- [ ] T008: Batch-migrate remaining skills to individual repos
-  - Script to: create repo, push skill contents, convert to submodule
-  - Skip PII skills (weekly-update, dynamics-api, etc.) — those stay gitignored
-  - Skip archived/template dirs
-  - Update .gitmodules for each migrated skill
+- [x] T008: Batch-migrate remaining skills to individual repos
+  - migrate-skills.py: classifies, creates repos, pushes with secret-scan CI
+  - 28 skills migrated to grobomo/ (public)
+  - 16 PII skills skipped (weekly-update, dynamics-api, v1-*, etc.)
+  - 4 non-skill dirs skipped (archive, templates, disk-cleanup, skill-marketplace)
+  - Each repo gets .github/publish.json, .gitignore, secret-scan.yml
+
+### Phase 5: Polish and real-world use
+- [x] T009: Add --top N flag to scan.py for quick "what's eating my disk" answers
+- [ ] T010: Run full home scan, save to last-scan.json, generate first real email report
+- [ ] T011: Schedule periodic scan via claude-scheduler (weekly)
+- [x] T012: Add patterns for common Windows bloat (Windows.old, WinSxS backup, Installer cache)
+  - Added 9 new patterns: Windows.old, WinSxS, Installer, Update cache, crash dumps, NuGet, Chrome/Edge cache, thumbnails
+
+## Session handoff (2026-04-05)
+- All 8 original tasks COMPLETE
+- 28 skills migrated to grobomo/ public repos with secret-scan CI
+- 16 PII skills remain local-only (correct behavior)
+- scan.py and git-hygiene.py both tested and working
+- Hooks updated to reference disk-monitor scan on disk alerts
+- Next: T009-T012 for production polish
 
 ## Permission model (CURRENT: no auto-delete)
 - Even AUTO-SAFE files require explicit permission — algorithm not yet trusted

@@ -254,6 +254,78 @@
       "min_age_days": null,
       "regeneration_command": null,
       "description": "Active project repositories"
+    },
+    {
+      "id": "windows-old",
+      "glob": "**/Windows.old/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Previous Windows installation -- large, usually safe to remove after upgrade"
+    },
+    {
+      "id": "windows-installer-cache",
+      "glob": "**/Windows/Installer/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Windows Installer cache -- needed for uninstalls/repairs"
+    },
+    {
+      "id": "winsxs-backup",
+      "glob": "**/WinSxS/Backup/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": "Dism.exe /Online /Cleanup-Image /StartComponentCleanup",
+      "description": "WinSxS component backup -- DISM can clean safely"
+    },
+    {
+      "id": "windows-update-cache",
+      "glob": "**/SoftwareDistribution/Download/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 7,
+      "regeneration_command": null,
+      "description": "Windows Update download cache -- re-downloaded on demand"
+    },
+    {
+      "id": "crash-dumps",
+      "glob": "**/*.dmp",
+      "category": "REVIEW",
+      "min_age_days": 7,
+      "regeneration_command": null,
+      "description": "Crash dump files -- useful for debugging, safe to clean if old"
+    },
+    {
+      "id": "nuget-cache",
+      "glob": "**/.nuget/packages/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": "dotnet nuget locals all --clear",
+      "description": "NuGet package cache -- fully regenerable"
+    },
+    {
+      "id": "chrome-cache",
+      "glob": "**/Google/Chrome/User Data/Default/Cache/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Chrome browser cache -- auto-regenerated"
+    },
+    {
+      "id": "edge-cache",
+      "glob": "**/Microsoft/Edge/User Data/Default/Cache/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Edge browser cache -- auto-regenerated"
+    },
+    {
+      "id": "thumbnails-cache",
+      "glob": "**/AppData/Local/Microsoft/Windows/Explorer/thumbcache*",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Windows thumbnail cache -- auto-regenerated"
     }
   ]
 }
