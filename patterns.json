@@ -1,0 +1,259 @@
+{
+  "_version": 1,
+  "_description": "Known-safe patterns database for disk-monitor. Maps path globs to safety categories.",
+  "_categories": {
+    "AUTO-SAFE": "Regenerable caches/temp files. Still requires explicit permission (algorithm not yet trusted).",
+    "REVIEW": "Potentially large, may be stale. Email report + user approval required.",
+    "NEVER-TOUCH": "User data, credentials, enterprise software. Manual review only."
+  },
+  "patterns": [
+    {
+      "id": "npm-cache",
+      "glob": "**/AppData/Local/npm-cache/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": "npm cache clean --force",
+      "description": "npm download cache — fully regenerable on next install"
+    },
+    {
+      "id": "pip-cache",
+      "glob": "**/AppData/Local/pip/cache/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": "pip cache purge",
+      "description": "pip download cache — fully regenerable"
+    },
+    {
+      "id": "pycache",
+      "glob": "**/__pycache__/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Python bytecode cache — auto-regenerated on import"
+    },
+    {
+      "id": "pytest-cache",
+      "glob": "**/.pytest_cache/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "pytest cache — regenerated on next test run"
+    },
+    {
+      "id": "node-modules-cache",
+      "glob": "**/node_modules/.cache/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Build tool caches inside node_modules"
+    },
+    {
+      "id": "temp-old",
+      "glob": "**/AppData/Local/Temp/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 7,
+      "regeneration_command": null,
+      "description": "Windows temp files older than 7 days"
+    },
+    {
+      "id": "claude-task-output",
+      "glob": "**/AppData/Local/Temp/claude/**",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Claude Code temp task output"
+    },
+    {
+      "id": "git-gc",
+      "glob": "**/.git/objects/pack/*.old",
+      "category": "AUTO-SAFE",
+      "min_age_days": 0,
+      "regeneration_command": "git gc",
+      "description": "Stale git pack files — cleaned by git gc"
+    },
+    {
+      "id": "docker-volumes",
+      "glob": "**/AppData/Local/Docker/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Docker Desktop data — may contain build cache, volumes. Docker Desktop removed; builds use EC2."
+    },
+    {
+      "id": "android-sdk",
+      "glob": "**/AppData/Local/Android/Sdk/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "Android SDK — large, may be unused"
+    },
+    {
+      "id": "dotnet-sdk",
+      "glob": "**/dotnet/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": ".NET SDK installs — check if actively used"
+    },
+    {
+      "id": "playwright-browsers",
+      "glob": "**/ms-playwright/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": "npx playwright install",
+      "description": "Playwright browser binaries — regenerable but large"
+    },
+    {
+      "id": "cypress-cache",
+      "glob": "**/AppData/Local/Cypress/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": "npx cypress install",
+      "description": "Cypress browser cache — regenerable but large"
+    },
+    {
+      "id": "lm-studio-models",
+      "glob": "**/LM Studio/**",
+      "category": "REVIEW",
+      "min_age_days": 0,
+      "regeneration_command": null,
+      "description": "LM Studio model files — very large, re-downloadable"
+    },
+    {
+      "id": "old-node-modules",
+      "glob": "**/node_modules/**",
+      "category": "REVIEW",
+      "min_age_days": 30,
+      "regeneration_command": "npm install",
+      "description": "node_modules in projects untouched for 30+ days"
+    },
+    {
+      "id": "vhds",
+      "glob": "**/*.vhd",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Virtual hard disks — may contain critical data"
+    },
+    {
+      "id": "vhdx",
+      "glob": "**/*.vhdx",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Hyper-V virtual hard disks"
+    },
+    {
+      "id": "disk-images",
+      "glob": "**/*.iso",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "ISO disk images"
+    },
+    {
+      "id": "databases",
+      "glob": "**/*.sqlite",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "SQLite databases — may contain user data"
+    },
+    {
+      "id": "databases-db",
+      "glob": "**/*.db",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Database files"
+    },
+    {
+      "id": "user-documents",
+      "glob": "**/Documents/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "User documents directory — always manual review"
+    },
+    {
+      "id": "user-downloads",
+      "glob": "**/Downloads/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "User downloads directory — always manual review"
+    },
+    {
+      "id": "ssh-keys",
+      "glob": "**/.ssh/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "SSH keys and config — irreplaceable credentials"
+    },
+    {
+      "id": "credential-files",
+      "glob": "**/.aws/credentials",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "AWS credentials file"
+    },
+    {
+      "id": "token-caches",
+      "glob": "**/.msgraph/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "MS Graph token cache — auth state"
+    },
+    {
+      "id": "landesk-patchdata",
+      "glob": "**/ProgramData/LANDesk/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "LANDESK/Shavlik enterprise patch data (~101 GB) — enterprise managed"
+    },
+    {
+      "id": "shavlik-patchdata",
+      "glob": "**/ProgramData/Shavlik/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Shavlik enterprise patch data — enterprise managed"
+    },
+    {
+      "id": "programdata",
+      "glob": "**/ProgramData/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "ProgramData — enterprise/system software"
+    },
+    {
+      "id": "wsl-distros",
+      "glob": "**/AppData/Local/Packages/*Linux*/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "WSL distribution files"
+    },
+    {
+      "id": "local-programs",
+      "glob": "**/AppData/Local/Programs/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "User-installed programs"
+    },
+    {
+      "id": "project-repos",
+      "glob": "**/ProjectsCL1/**",
+      "category": "NEVER-TOUCH",
+      "min_age_days": null,
+      "regeneration_command": null,
+      "description": "Active project repositories"
+    }
+  ]
+}

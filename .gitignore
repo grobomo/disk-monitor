@@ -1,0 +1,4 @@
+cleanup-log.json
+__pycache__/
+*.pyc
+archive/
